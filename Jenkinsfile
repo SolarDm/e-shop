@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'maven:3.8-eclipse-temurin-17-node-18'
-            args '-v /var/run/docker.sock:/var/run/docker.sock --group-add 999'
-        }
-    }
+    agent none
 
     environment {
         DOCKER_REGISTRY = 'index.docker.io'
@@ -35,6 +30,11 @@ pipeline {
         stage('Build Projects') {
             parallel {
                 stage('Build Backend') {
+                    agent {
+                        docker {
+                            image 'maven:3.8-eclipse-temurin-17'
+                        }
+                    }
                     steps {
                         dir('backend') {
                             sh 'mvn clean package -DskipTests'
@@ -43,6 +43,11 @@ pipeline {
                 }
 
                 stage('Build Frontend') {
+                    agent {
+                        docker {
+                            image 'node:18-alpine'
+                        }
+                    }
                     steps {
                         dir('frontend') {
                             sh 'npm install'
