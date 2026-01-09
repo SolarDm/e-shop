@@ -54,20 +54,23 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 script {
-                    withCredentials([string(credentialsId: DOCKER_CREDENTIALS_ID, variable: 'DOCKER_PASSWORD')]) {
-                        sh 'echo $DOCKER_PASSWORD | docker login -u dima263 --password-stdin'
-                        
-                        sh """
-                            docker push ${DOCKER_IMAGE_BACKEND}:${BUILD_NUMBER}
-                            docker push ${DOCKER_IMAGE_BACKEND}:latest
-                            docker push ${DOCKER_IMAGE_FRONTEND}:${BUILD_NUMBER}
-                            docker push ${DOCKER_IMAGE_FRONTEND}:latest
-                        """
+                    withCredentials([usernamePassword(
+                        credentialsId: DOCKER_CREDENTIALS_ID,
+                        usernameVariable: 'DOCKER_USERNAME',
+                        passwordVariable: 'DOCKER_PASSWORD'
+                    )]) {
+                        sh '''
+                            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+                            
+                            docker push dima263/e-shop-backend:${BUILD_NUMBER}
+                            docker push dima263/e-shop-backend:latest
+                            docker push dima263/e-shop-frontend:${BUILD_NUMBER}
+                            docker push dima263/e-shop-frontend:latest
+                        '''
                     }
                 }
             }
         }
-
         stage('Deploy') {
             agent any
             steps {
