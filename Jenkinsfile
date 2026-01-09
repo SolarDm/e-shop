@@ -16,7 +16,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                node('master') {
+                node() {
                     checkout([
                         $class: 'GitSCM',
                         branches: [[name: "*/${GIT_BRANCH}"]],
@@ -62,7 +62,7 @@ pipeline {
 
         stage('Build Docker Images') {
             steps {
-                node('master') {
+                node() {
                     script {
                         docker.build("${DOCKER_IMAGE_BACKEND}:${BUILD_NUMBER}", './backend')
                         docker.build("${DOCKER_IMAGE_FRONTEND}:${BUILD_NUMBER}", './frontend')
@@ -73,7 +73,7 @@ pipeline {
 
         stage('Push to Docker Hub') {
             steps {
-                node('master') { 
+                node() { 
                     script {
                         docker.withRegistry("https://${DOCKER_REGISTRY}", DOCKER_CREDENTIALS_ID) {
                             docker.image("${DOCKER_IMAGE_BACKEND}:${BUILD_NUMBER}").push()
@@ -88,7 +88,7 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                node('master') {
+                node() {
                     sh '''
                         docker-compose down || true
                         docker-compose pull
@@ -102,7 +102,7 @@ pipeline {
 
     post {
         always {
-            node('master') {
+            node() {
                 sh 'docker system prune -f --filter "until=24h"'
             }
         }
