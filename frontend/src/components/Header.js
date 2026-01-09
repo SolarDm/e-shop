@@ -8,7 +8,7 @@ const Header = () => {
     const { user, logout, isAdmin } = useAuth();
     const location = useLocation();
     const [cartCount, setCartCount] = useState(0);
-    
+
     useEffect(() => {
         const fetchCartCount = async () => {
             if (!user) return;
@@ -77,7 +77,6 @@ const Header = () => {
                                 <span className="nav-text">Заказы</span>
                             </Link>
 
-                            {/* Ссылка на админку только для администраторов */}
                             {isAdmin && (
                                 <Link to="/admin" className={`nav-link admin-link ${isActive('/admin')}`}>
                                     <span className="nav-icon">⚙️</span>
