@@ -34,6 +34,7 @@ pipeline {
                         dir('backend') {
                             script {
                                 docker.build("${DOCKER_IMAGE_BACKEND}:${BUILD_NUMBER}", '.')
+                                sh "docker tag ${DOCKER_IMAGE_BACKEND}:${BUILD_NUMBER} ${DOCKER_IMAGE_BACKEND}:latest"
                             }
                         }
                     }
@@ -44,6 +45,7 @@ pipeline {
                         dir('frontend') {
                             script {
                                 docker.build("${DOCKER_IMAGE_FRONTEND}:${BUILD_NUMBER}", '.')
+                                sh "docker tag ${DOCKER_IMAGE_FRONTEND}:${BUILD_NUMBER} ${DOCKER_IMAGE_FRONTEND}:latest"
                             }
                         }
                     }
