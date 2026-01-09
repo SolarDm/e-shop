@@ -52,14 +52,17 @@ pipeline {
         }
 
         stage('Push to Docker Hub') {
-            agent any 
             steps {
                 script {
-                    docker.withRegistry("https://${DOCKER_REGISTRY}", DOCKER_CREDENTIALS_ID) {
-                        docker.image("${DOCKER_IMAGE_BACKEND}:${BUILD_NUMBER}").push()
-                        docker.image("${DOCKER_IMAGE_FRONTEND}:${BUILD_NUMBER}").push()
-                        docker.image("${DOCKER_IMAGE_BACKEND}:${BUILD_NUMBER}").push('latest')
-                        docker.image("${DOCKER_IMAGE_FRONTEND}:${BUILD_NUMBER}").push('latest')
+                    withCredentials([string(credentialsId: DOCKER_CREDENTIALS_ID, variable: 'DOCKER_PASSWORD')]) {
+                        sh 'echo $DOCKER_PASSWORD | docker login -u dima263 --password-stdin'
+                        
+                        sh """
+                            docker push ${DOCKER_IMAGE_BACKEND}:${BUILD_NUMBER}
+                            docker push ${DOCKER_IMAGE_BACKEND}:latest
+                            docker push ${DOCKER_IMAGE_FRONTEND}:${BUILD_NUMBER}
+                            docker push ${DOCKER_IMAGE_FRONTEND}:latest
+                        """
                     }
                 }
             }
