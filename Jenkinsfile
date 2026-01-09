@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_REGISTRY = 'index.docker.io'
+        DOCKER_REGISTRY = ''
         DOCKER_IMAGE_BACKEND = 'dima263/e-shop-backend'
         DOCKER_IMAGE_FRONTEND = 'dima263/e-shop-frontend'
 
@@ -27,44 +27,26 @@ pipeline {
             }
         }
 
-        stage('Build Projects') {
+        stage('Build Docker Images') {
             parallel {
-                stage('Build Backend') {
-                    agent {
-                        docker {
-                            image 'maven:3.8-eclipse-temurin-17'
-                        }
-                    }
+                stage('Build Backend Image') {
                     steps {
                         dir('backend') {
-                            sh 'mvn clean package -DskipTests'
+                            script {
+                                docker.build("${DOCKER_IMAGE_BACKEND}:${BUILD_NUMBER}", '.')
+                            }
                         }
                     }
                 }
 
-                stage('Build Frontend') {
-                    agent {
-                        docker {
-                            image 'node:18-alpine'
-                            args '-u root:root'
-                        }
-                    }
+                stage('Build Frontend Image') {
                     steps {
                         dir('frontend') {
-                            sh 'npm install'
-                            sh 'npm run build'
+                            script {
+                                docker.build("${DOCKER_IMAGE_FRONTEND}:${BUILD_NUMBER}", '.')
+                            }
                         }
                     }
-                }
-            }
-        }
-
-        stage('Build Docker Images') {
-            agent any
-            steps {
-                script {
-                    docker.build("${DOCKER_IMAGE_BACKEND}:${BUILD_NUMBER}", './backend')
-                    docker.build("${DOCKER_IMAGE_FRONTEND}:${BUILD_NUMBER}", './frontend')
                 }
             }
         }
