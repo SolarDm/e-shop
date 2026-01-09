@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    triggers {
+        pollSCM('*/5 * * * *')
+    }
+
     environment {
         DOCKER_REGISTRY = ''
         DOCKER_IMAGE_BACKEND = 'dima263/e-shop-backend'
