@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'maven:3.8-eclipse-temurin-17-node-18'
+            args '-v /var/run/docker.sock:/var/run/docker.sock --user root'
+        }
+    }
 
     environment {
         DOCKER_REGISTRY = 'index.docker.io'
