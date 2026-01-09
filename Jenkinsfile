@@ -1,5 +1,5 @@
 pipeline {
-    agent none
+    agent any
 
     environment {
         DOCKER_REGISTRY = 'index.docker.io'
@@ -16,16 +16,14 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                node() {
-                    checkout([
-                        $class: 'GitSCM',
-                        branches: [[name: "*/${GIT_BRANCH}"]],
-                        userRemoteConfigs: [[
-                            url: "${GIT_REPO_URL}",
-                            credentialsId: "${GIT_CREDENTIALS_ID}"
-                        ]]
-                    ])
-                }
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: "*/${GIT_BRANCH}"]],
+                    userRemoteConfigs: [[
+                        url: "${GIT_REPO_URL}",
+                        credentialsId: "${GIT_CREDENTIALS_ID}"
+                    ]]
+                ])
             }
         }
 
@@ -61,50 +59,45 @@ pipeline {
         }
 
         stage('Build Docker Images') {
+            agent any
             steps {
-                node() {
-                    script {
-                        docker.build("${DOCKER_IMAGE_BACKEND}:${BUILD_NUMBER}", './backend')
-                        docker.build("${DOCKER_IMAGE_FRONTEND}:${BUILD_NUMBER}", './frontend')
-                    }
+                script {
+                    docker.build("${DOCKER_IMAGE_BACKEND}:${BUILD_NUMBER}", './backend')
+                    docker.build("${DOCKER_IMAGE_FRONTEND}:${BUILD_NUMBER}", './frontend')
                 }
             }
         }
 
         stage('Push to Docker Hub') {
+            agent any 
             steps {
-                node() { 
-                    script {
-                        docker.withRegistry("https://${DOCKER_REGISTRY}", DOCKER_CREDENTIALS_ID) {
-                            docker.image("${DOCKER_IMAGE_BACKEND}:${BUILD_NUMBER}").push()
-                            docker.image("${DOCKER_IMAGE_FRONTEND}:${BUILD_NUMBER}").push()
-                            docker.image("${DOCKER_IMAGE_BACKEND}:${BUILD_NUMBER}").push('latest')
-                            docker.image("${DOCKER_IMAGE_FRONTEND}:${BUILD_NUMBER}").push('latest')
-                        }
+                script {
+                    docker.withRegistry("https://${DOCKER_REGISTRY}", DOCKER_CREDENTIALS_ID) {
+                        docker.image("${DOCKER_IMAGE_BACKEND}:${BUILD_NUMBER}").push()
+                        docker.image("${DOCKER_IMAGE_FRONTEND}:${BUILD_NUMBER}").push()
+                        docker.image("${DOCKER_IMAGE_BACKEND}:${BUILD_NUMBER}").push('latest')
+                        docker.image("${DOCKER_IMAGE_FRONTEND}:${BUILD_NUMBER}").push('latest')
                     }
                 }
             }
         }
 
         stage('Deploy') {
+            agent any
             steps {
-                node() {
-                    sh '''
-                        docker-compose down || true
-                        docker-compose pull
-                        docker-compose up -d
-                        docker-compose logs --tail=20
-                    '''
-                }
+                sh '''
+                    docker-compose down || true
+                    docker-compose pull
+                    docker-compose up -d
+                    docker-compose logs --tail=20
+                '''
             }
         }
     }
 
     post {
         always {
-            node() {
-                sh 'docker system prune -f --filter "until=24h"'
-            }
+            sh 'docker system prune -f --filter "until=24h"'
         }
         success {
             echo 'Пайплайн успешно выполнен! Приложение развернуто.'
