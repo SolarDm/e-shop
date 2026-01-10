@@ -98,7 +98,26 @@ pipeline {
             steps {
                 dir('postman-tests') {
                     script {
-                        timeout(time: 10, unit: 'SECONDS')
+                        timeout(time: 3, unit: 'MINUTES') {
+                            waitUntil {
+                                try {
+                                    def result = sh(
+                                        script: '''
+                                            curl -s -f http://172.18.117.61/api/health \
+                                                -o /dev/null \
+                                                -w "%{http_code}" \
+                                                --max-time 5 && echo "READY" || echo "NOT_READY"
+                                        ''',
+                                        returnStdout: true
+                                    ).trim()
+                                    
+                                    return result.contains("READY")
+                                } catch (Exception e) {
+                                    sleep 10
+                                    return false
+                                }
+                            }
+                        }
                     }
 
                     withCredentials([string(credentialsId: 'eshop-user-token', variable: 'USER_TOKEN')]) {
@@ -119,6 +138,7 @@ pipeline {
                     }
                 }
             }
+
             post {
                 always {
                     junit 'postman-tests/newman-test-result.xml'
