@@ -34,6 +34,79 @@ pipeline {
             }
         }
 
+        stage('Run Test Environment') {
+            steps {
+                script {                    
+                    sh '''
+                        docker compose -f docker-compose.test.yml down || true
+                        docker compose -f docker-compose.test.yml up -d
+                    '''
+                }
+            }
+        }
+
+        stage('Run API Tests') {
+            agent any
+
+            steps {
+                dir('postman-tests') {
+                    script {
+                        timeout(time: 3, unit: 'MINUTES') {
+                            waitUntil {
+                                try {
+                                    def result = sh(
+                                        script: '''
+                                            curl -s -f http://172.18.117.61:81/api/health \
+                                                -o /dev/null \
+                                                -w "%{http_code}" \
+                                                --max-time 5 && echo "READY" || echo "NOT_READY"
+                                        ''',
+                                        returnStdout: true
+                                    ).trim()
+                                    
+                                    return !result.contains("NOT_READY")
+                                } catch (Exception e) {
+                                    sleep 10
+                                    return false
+                                }
+                            }
+                        }
+                    }
+
+                    withCredentials([string(credentialsId: 'eshop-user-token', variable: 'USER_TOKEN')]) {
+                        sh '''
+                            cp e-shop-local.json e-shop-local-runtime.json
+                            sed -i "s|\\\${USER_TOKEN}|${USER_TOKEN}|g" e-shop-local-runtime.json
+                        '''
+
+                        sh '''
+                            newman run "e-shop-product-api-tests.json" \
+                                -e "e-shop-local-runtime.json" \
+                                --reporters cli,junit,html \
+                                --reporter-junit-export "newman-test-result.xml" \
+                                --reporter-html-export "newman-test-report.html" \
+                                --disable-unicode
+                        '''
+                    }
+                }
+            }
+
+            post {
+                always {
+                    junit 'postman-tests/newman-test-result.xml'
+                    archiveArtifacts artifacts: 'postman-tests/newman-test-result.xml, postman-tests/newman-test-report.html', fingerprint: true
+                }
+            }
+        }
+
+        stage('Stop Test Environment') {
+            steps {
+                sh '''
+                    docker compose -f docker-compose.test.yml down -v || true
+                '''
+            }
+        }
+
         stage('Build Docker Images') {
             parallel {
                 stage('Build Backend Image') {
@@ -80,6 +153,7 @@ pipeline {
                 }
             }
         }
+
         stage('Deploy') {
             agent any
             steps {
@@ -91,66 +165,12 @@ pipeline {
                 '''
             }
         }
-
-        stage('Run API Tests') {
-            agent any
-
-            steps {
-                dir('postman-tests') {
-                    script {
-                        timeout(time: 3, unit: 'MINUTES') {
-                            waitUntil {
-                                try {
-                                    def result = sh(
-                                        script: '''
-                                            curl -s -f http://172.18.117.61/api/health \
-                                                -o /dev/null \
-                                                -w "%{http_code}" \
-                                                --max-time 5 && echo "READY" || echo "NOT_READY"
-                                        ''',
-                                        returnStdout: true
-                                    ).trim()
-                                    
-                                    return !result.contains("NOT_READY")
-                                } catch (Exception e) {
-                                    sleep 10
-                                    return false
-                                }
-                            }
-                        }
-                    }
-
-                    withCredentials([string(credentialsId: 'eshop-user-token', variable: 'USER_TOKEN')]) {
-                        sh '''
-                            cp e-shop-local.json e-shop-local-runtime.json
-                            sed -i "s|\\\${USER_TOKEN}|${USER_TOKEN}|g" e-shop-local-runtime.json
-                            sed -i "s|\\\${BASE_URL}|http://localhost|g" e-shop-local-runtime.json
-                        '''
-
-                        sh '''
-                            newman run "e-shop-product-api-tests.json" \
-                                -e "e-shop-local-runtime.json" \
-                                --reporters cli,junit,html \
-                                --reporter-junit-export "newman-test-result.xml" \
-                                --reporter-html-export "newman-test-report.html" \
-                                --disable-unicode
-                        '''
-                    }
-                }
-            }
-
-            post {
-                always {
-                    junit 'postman-tests/newman-test-result.xml'
-                    archiveArtifacts artifacts: 'postman-tests/newman-test-result.xml, postman-tests/newman-test-report.html', fingerprint: true
-                }
-            }
-        }
     }
 
     post {
         always {
             sh 'docker system prune -f --filter "until=24h"'
+            sh 'docker compose -f docker-compose.test.yml down -v || true'
         }
         success {
             echo 'Пайплайн успешно выполнен! Приложение развернуто.'

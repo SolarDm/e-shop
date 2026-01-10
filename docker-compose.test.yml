@@ -1,0 +1,49 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:17
+    container_name: postgres-test
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpassword
+      POSTGRES_DB: ecommerce_db_test
+    networks:
+      - app-network-test
+
+  backend:
+    build: ./backend
+    container_name: backend-test
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/ecommerce_db_test
+      SPRING_DATASOURCE_USERNAME: testuser
+      SPRING_DATASOURCE_PASSWORD: testpassword
+    depends_on:
+      - db
+    networks:
+      - app-network-test
+
+  frontend:
+    build: ./frontend
+    container_name: frontend-test
+    depends_on:
+      - backend
+    networks:
+      - app-network-test
+
+  nginx:
+    image: nginx:alpine
+    container_name: eshop-nginx-test
+    ports:
+      - "81:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - app-network-test
+
+networks:
+  app-network-test:
+    driver: bridge
