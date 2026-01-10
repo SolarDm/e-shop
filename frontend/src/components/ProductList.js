@@ -34,7 +34,7 @@ const ProductList = () => {
             setLoading(true);
             setError(null);
 
-            const response = await axios.get(`${API_BASE_URL}/api/products`);
+            const response = await axios.get(`${API_BASE_URL}/products`);
 
             if (!response.data.success) {
                 throw new Error(response.data.error || 'Ошибка загрузки товаров');
@@ -60,7 +60,7 @@ const ProductList = () => {
 
     const fetchCategories = async () => {
         try {
-            const response = await axios.get(`${API_BASE_URL}/api/products/categories`);
+            const response = await axios.get(`${API_BASE_URL}/products/categories`);
             if (response.data.success) {
                 setCategories(response.data.categories || []);
             }
@@ -124,7 +124,7 @@ const ProductList = () => {
             }
 
             const response = await axios.post(
-                `${API_BASE_URL}/api/cart/add?productId=${productId}&quantity=1`,
+                `${API_BASE_URL}/cart/add?productId=${productId}&quantity=1`,
                 {},
                 {
                     headers: {
@@ -157,7 +157,7 @@ const ProductList = () => {
 
         try {
             setLoading(true);
-            const response = await axios.get(`${API_BASE_URL}/api/products/search?name=${searchTerm}`);
+            const response = await axios.get(`${API_BASE_URL}/products/search?name=${searchTerm}`);
 
             if (!response.data.success) {
                 throw new Error(response.data.error || 'Ошибка поиска');
@@ -181,7 +181,7 @@ const ProductList = () => {
 
         try {
             setLoading(true);
-            const response = await axios.get(`${API_BASE_URL}/api/products/category/${categoryId}`);
+            const response = await axios.get(`${API_BASE_URL}/products/category/${categoryId}`);
 
             if (!response.data.success) {
                 throw new Error(response.data.error || 'Ошибка фильтрации');

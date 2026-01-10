@@ -17,7 +17,7 @@ const Cart = () => {
 
     const fetchCart = async () => {
         try {
-            const response = await fetch(`${API_BASE_URL}/api/cart`, {
+            const response = await fetch(`${API_BASE_URL}/cart`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
@@ -45,7 +45,7 @@ const Cart = () => {
         }
 
         try {
-            const response = await fetch(`${API_BASE_URL}/api/cart/remove?productId=${productId}`, {
+            const response = await fetch(`${API_BASE_URL}/cart/remove?productId=${productId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -75,7 +75,7 @@ const Cart = () => {
         }
 
         try {
-            const response = await fetch(`${API_BASE_URL}/api/cart/update?productId=${productId}&quantity=${quantity}`, {
+            const response = await fetch(`${API_BASE_URL}/cart/update?productId=${productId}&quantity=${quantity}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -114,7 +114,7 @@ const Cart = () => {
 
         setCheckoutLoading(true);
         try {
-            const response = await fetch(`${API_BASE_URL}/api/orders`, {
+            const response = await fetch(`${API_BASE_URL}/orders`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,

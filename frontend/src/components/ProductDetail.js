@@ -20,7 +20,7 @@ const ProductDetail = () => {
             setLoading(true);
             setError(null);
 
-            const response = await fetch(`${API_BASE_URL}/api/products/${id}`);
+            const response = await fetch(`${API_BASE_URL}/products/${id}`);
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -52,7 +52,7 @@ const ProductDetail = () => {
             }
 
             const response = await fetch(
-                `${API_BASE_URL}/api/cart/add?productId=${id}&quantity=${quantity}`,
+                `${API_BASE_URL}/cart/add?productId=${id}&quantity=${quantity}`,
                 {
                     method: 'POST',
                     headers: {

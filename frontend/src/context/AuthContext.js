@@ -59,7 +59,7 @@ export const AuthProvider = ({ children }) => {
         try {
             const tokenRoles = checkRolesFromToken(token);
 
-            const response = await axios.get(`${API_BASE_URL}/api/auth/profile`, {
+            const response = await axios.get(`${API_BASE_URL}/auth/profile`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -118,7 +118,7 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (username, password) => {
         try {
-            const response = await axios.post(`${API_BASE_URL}/api/auth/signin`, {
+            const response = await axios.post(`${API_BASE_URL}/auth/signin`, {
                 username,
                 password
             }, {
@@ -156,7 +156,7 @@ export const AuthProvider = ({ children }) => {
 
     const register = async (username, email, password) => {
         try {
-            const response = await axios.post(`${API_BASE_URL}/api/auth/signup`, {
+            const response = await axios.post(`${API_BASE_URL}/auth/signup`, {
                 username,
                 email,
                 password

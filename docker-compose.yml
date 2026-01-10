@@ -17,8 +17,6 @@ services:
 
   backend:
     image: dima263/e-shop-backend:latest
-    ports:
-      - "8090:8080"
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/ecommerce_db
       SPRING_DATASOURCE_USERNAME: dima
@@ -30,10 +28,21 @@ services:
 
   frontend:
     image: dima263/e-shop-frontend:latest
-    ports:
-      - "80:80"
     depends_on:
       - backend
+    networks:
+      - app-network
+
+  nginx:
+    image: nginx:alpine
+    container_name: eshop-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - backend
+      - frontend
     networks:
       - app-network
 

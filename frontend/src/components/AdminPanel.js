@@ -47,7 +47,7 @@ const AdminPanel = () => {
         try {
             setLoading(true);
             const token = localStorage.getItem('token');
-            const response = await axios.get(`${API_BASE_URL}/api/admin/dashboard`, {
+            const response = await axios.get(`${API_BASE_URL}/admin/dashboard`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
@@ -66,7 +66,7 @@ const AdminPanel = () => {
         try {
             setLoading(true);
             const token = localStorage.getItem('token');
-            const response = await axios.get(`${API_BASE_URL}/api/admin/orders`, {
+            const response = await axios.get(`${API_BASE_URL}/admin/orders`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
@@ -84,7 +84,7 @@ const AdminPanel = () => {
     const fetchProducts = async () => {
         try {
             setLoading(true);
-            const response = await axios.get(`${API_BASE_URL}/api/products`);
+            const response = await axios.get(`${API_BASE_URL}/products`);
 
             if (response.data.success) {
                 setProducts(response.data.products);
@@ -99,7 +99,7 @@ const AdminPanel = () => {
 
     const fetchCategories = async () => {
         try {
-            const response = await axios.get(`${API_BASE_URL}/api/products/categories`);
+            const response = await axios.get(`${API_BASE_URL}/products/categories`);
             if (response.data.success) {
                 setCategories(response.data.categories);
             }
@@ -112,7 +112,7 @@ const AdminPanel = () => {
         try {
             setLoading(true);
             const token = localStorage.getItem('token');
-            const response = await axios.get(`${API_BASE_URL}/api/admin/users`, {
+            const response = await axios.get(`${API_BASE_URL}/admin/users`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
@@ -132,7 +132,7 @@ const AdminPanel = () => {
         try {
             const token = localStorage.getItem('token');
             const response = await axios.post(
-                `${API_BASE_URL}/api/admin/products?name=${newProduct.name}&description=${newProduct.description}&price=${newProduct.price}&categoryId=${newProduct.categoryId}`,
+                `${API_BASE_URL}/admin/products?name=${newProduct.name}&description=${newProduct.description}&price=${newProduct.price}&categoryId=${newProduct.categoryId}`,
                 {},
                 { headers: { 'Authorization': `Bearer ${token}` } }
             );
@@ -154,7 +154,7 @@ const AdminPanel = () => {
         try {
             const token = localStorage.getItem('token');
             const response = await axios.delete(
-                `${API_BASE_URL}/api/admin/products/${productId}`,
+                `${API_BASE_URL}/admin/products/${productId}`,
                 { headers: { 'Authorization': `Bearer ${token}` } }
             );
 
@@ -193,7 +193,7 @@ const AdminPanel = () => {
         try {
             const token = localStorage.getItem('token');
             const response = await axios.put(
-                `${API_BASE_URL}/api/admin/products/${editingProduct.id}?name=${editForm.name}&description=${editForm.description}&price=${editForm.price}&categoryId=${editForm.categoryId}`,
+                `${API_BASE_URL}/admin/products/${editingProduct.id}?name=${editForm.name}&description=${editForm.description}&price=${editForm.price}&categoryId=${editForm.categoryId}`,
                 {},
                 { headers: { 'Authorization': `Bearer ${token}` } }
             );
@@ -213,7 +213,7 @@ const AdminPanel = () => {
         try {
             const token = localStorage.getItem('token');
             const response = await axios.put(
-                `${API_BASE_URL}/api/admin/orders/${orderId}/status?status=${status}`,
+                `${API_BASE_URL}/admin/orders/${orderId}/status?status=${status}`,
                 {},
                 { headers: { 'Authorization': `Bearer ${token}` } }
             );
@@ -232,7 +232,7 @@ const AdminPanel = () => {
         try {
             const token = localStorage.getItem('token');
             const response = await axios.put(
-                `${API_BASE_URL}/api/admin/users/${userId}/role?role=${role}`,
+                `${API_BASE_URL}/admin/users/${userId}/role?role=${role}`,
                 {},
                 { headers: { 'Authorization': `Bearer ${token}` } }
             );

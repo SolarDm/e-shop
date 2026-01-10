@@ -21,7 +21,7 @@ const OrderHistory = () => {
     const fetchOrders = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.get(`${API_BASE_URL}/api/orders`, {
+            const response = await axios.get(`${API_BASE_URL}/orders`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -82,7 +82,7 @@ const OrderHistory = () => {
     const handleReorder = async (orderId) => {
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.post(`${API_BASE_URL}/api/orders/${orderId}/reorder`, {}, {
+            const response = await axios.post(`${API_BASE_URL}/orders/${orderId}/reorder`, {}, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }

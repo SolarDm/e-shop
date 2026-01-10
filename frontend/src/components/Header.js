@@ -15,7 +15,7 @@ const Header = () => {
 
             try {
                 const token = localStorage.getItem('token');
-                const response = await fetch(`${API_BASE_URL}/api/cart`, {
+                const response = await fetch(`${API_BASE_URL}/cart`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
