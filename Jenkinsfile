@@ -18,6 +18,10 @@ pipeline {
         GIT_REPO_URL = 'git@github.com:SolarDm/e-shop.git'
         GIT_BRANCH = 'main'
         GIT_CREDENTIALS_ID = 'jenkins-wsl-ssh-key'
+
+        UI_TESTS_DIR = 'ui-tests'
+        TEST_FRONTEND_URL = 'http://172.18.117.61:81'
+        TEST_BACKEND_URL = 'http://172.18.117.61:81/api'
     }
 
     stages {
@@ -98,6 +102,38 @@ pipeline {
                 }
             }
         }
+
+        stage('Run UI Tests') {
+            agent {
+                docker {
+                    image 'maven:3.9-eclipse-temurin-17'
+                    args '--shm-size=2g'
+                }
+            }
+
+            steps {
+                dir(UI_TESTS_DIR) {
+                    script {
+                        sh """
+                            mvn test \
+                                -Dselenide.base-url=${TEST_FRONTEND_URL} \
+                                -Dapp.backend.url=${TEST_BACKEND_URL} \
+                                -Dbrowser=chrome \
+                                -Dselenide.headless=true \
+                                -Dselenide.timeout=10000
+                        """
+                    }
+                }
+            }
+            post {
+                always {
+                    junit "${UI_TESTS_DIR}/target/surefire-reports/*.xml"
+                    
+                    archiveArtifacts artifacts: "${UI_TESTS_DIR}/target/selenide/**/*.png", allowEmptyArchive: true
+                }
+            }
+        }
+        
 
         stage('Stop Test Environment') {
             steps {
