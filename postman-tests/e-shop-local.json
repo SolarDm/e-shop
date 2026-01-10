@@ -2,7 +2,7 @@
   "id": "{{$guid}}",
   "values": [
     {
-      "key": "user_token",
+      "key": "admin_token",
       "value": "${USER_TOKEN}",
       "type": "secret"
     },
