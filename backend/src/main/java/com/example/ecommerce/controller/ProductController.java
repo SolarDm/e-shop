@@ -72,53 +72,6 @@ public class ProductController {
         }
     }
 
-    @PostMapping
-    public ResponseEntity<?> createProduct(
-            @RequestParam String name,
-            @RequestParam String description,
-            @RequestParam BigDecimal price,
-            @RequestParam Long categoryId) {
-        try {
-            Product product = productService.createProduct(name, description, price, categoryId);
-            return ResponseEntity.ok(
-                    Map.of("success", true, "product", product, "message", "Товар создан")
-            );
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("success", false, "error", "Ошибка создания товара: " + e.getMessage()));
-        }
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateProduct(
-            @PathVariable Long id,
-            @RequestParam String name,
-            @RequestParam String description,
-            @RequestParam BigDecimal price) {
-        try {
-            Product product = productService.updateProduct(id, name, description, price);
-            return ResponseEntity.ok(
-                    Map.of("success", true, "product", product, "message", "Товар обновлен")
-            );
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("success", false, "error", "Ошибка обновления товара: " + e.getMessage()));
-        }
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteProduct(@PathVariable Long id) {
-        try {
-            productService.deleteProduct(id);
-            return ResponseEntity.ok(
-                    Map.of("success", true, "message", "Товар удален")
-            );
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("success", false, "error", "Ошибка удаления товара: " + e.getMessage()));
-        }
-    }
-
     @GetMapping("/categories")
     public ResponseEntity<?> getAllCategories() {
         try {

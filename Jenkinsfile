@@ -87,6 +87,40 @@ pipeline {
                 '''
             }
         }
+
+        stage('Run API Tests') {
+            agent any
+            steps {
+                dir('postman-tests') {
+                    withCredentials([string(credentialsId: 'eshop-user-token', variable: 'USER_TOKEN')]) {
+                        sh '''
+                            cp e-shop-local.json e-shop-local-runtime.json
+                            sed -i "s|\\\${USER_TOKEN}|${USER_TOKEN}|g" e-shop-local-runtime.json
+                            sed -i "s|\\\${BASE_URL}|http://localhost|g" e-shop-local-runtime.json
+                        '''
+
+                        sh '''
+                            newman run "e-shop-product-api-tests.json" \
+                                -e "e-shop-local-runtime.json" \
+                                --reporters cli,junit,html \
+                                --reporter-junit-export "newman-test-result.xml" \
+                                --reporter-html-export "newman-test-report.html" \
+                                --disable-unicode
+                        '''
+                    }
+                }
+            }
+            post {
+                always {
+                    junit 'postman-tests/newman-test-result.xml'
+                    publishHTML(target: [
+                        reportDir: 'postman-tests',
+                        reportFiles: 'newman-test-report.html',
+                        reportName: 'Postman API Test Report'
+                    ])
+                }
+            }
+        }
     }
 
     post {
