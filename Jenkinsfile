@@ -142,11 +142,7 @@ pipeline {
             post {
                 always {
                     junit 'postman-tests/newman-test-result.xml'
-                    publishHTML(target: [
-                        reportDir: 'postman-tests',
-                        reportFiles: 'newman-test-report.html',
-                        reportName: 'Postman API Test Report'
-                    ])
+                    archiveArtifacts artifacts: 'postman-tests/newman-test-result.xml, postman-tests/newman-test-report.html', fingerprint: true
                 }
             }
         }
