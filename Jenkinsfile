@@ -158,10 +158,10 @@ pipeline {
             agent any
             steps {
                 sh '''
-                    docker compose down || true
-                    docker compose pull
-                    docker compose up -d
-                    docker compose logs --tail=20
+                    docker compose -f docker-compose.yml down || true
+                    docker compose -f docker-compose.yml pull
+                    docker compose -f docker-compose.yml up -d
+                    docker compose -f docker-compose.yml logs --tail=20
                 '''
             }
         }
