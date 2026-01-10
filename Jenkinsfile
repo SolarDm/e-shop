@@ -94,8 +94,13 @@ pipeline {
 
         stage('Run API Tests') {
             agent any
+
             steps {
                 dir('postman-tests') {
+                    script {
+                        timeout(time: 10, unit: 'SECONDS')
+                    }
+
                     withCredentials([string(credentialsId: 'eshop-user-token', variable: 'USER_TOKEN')]) {
                         sh '''
                             cp e-shop-local.json e-shop-local-runtime.json
