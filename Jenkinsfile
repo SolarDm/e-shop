@@ -111,7 +111,7 @@ pipeline {
                                         returnStdout: true
                                     ).trim()
                                     
-                                    return result.contains("READY")
+                                    return !result.contains("NOT_READY")
                                 } catch (Exception e) {
                                     sleep 10
                                     return false
