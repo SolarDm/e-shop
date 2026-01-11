@@ -76,9 +76,8 @@
                 <version>3.0.0</version>
                 <configuration>
                     <systemPropertyVariables>
-                        <selenide.baseUrl>${selenide.baseUrl}</selenide.baseUrl>
-                        <browser>${browser}</browser>
-                        <selenide.headless>${selenide.headless}</selenide.headless>
+                        <baseUrl>http://172.18.117.61:81</baseUrl>
+                        <headless>true</headless>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>

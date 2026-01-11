@@ -23,21 +23,39 @@ public class BaseTest {
     protected static final String TEST_PASSWORD = "password123";
 
     @BeforeAll
-    static void setUpAll() {
-        WebDriverManager.chromedriver().setup();
+static void setUpAll() {
+    WebDriverManager.chromedriver().setup();
 
-        String baseUrl = System.getProperty("baseUrl", "http://172.18.117.61:81");
-
-        baseURI = baseUrl.replace("/api", "");
-
-        createTestUsers();
-
-        Configuration.baseUrl = baseUrl;
-        Configuration.browserSize = "1920x1080";
-        Configuration.headless = Boolean.parseBoolean(System.getProperty("headless", "true"));
-        Configuration.timeout = 10000;
-        Configuration.browser = "chrome";
-    }
+    String driverPath = WebDriverManager.chromedriver().getDownloadedDriverPath();
+    System.setProperty("webdriver.chrome.driver", driverPath);
+    System.out.println("ChromeDriver path: " + driverPath);
+    
+    String baseUrl = System.getProperty("baseUrl", "http://172.18.117.61:81");
+    Configuration.baseUrl = baseUrl;
+    Configuration.browserSize = "1920x1080";
+    Configuration.headless = Boolean.parseBoolean(System.getProperty("headless", "true"));
+    Configuration.timeout = 15000;
+    Configuration.browser = "chrome";
+    
+    ChromeOptions options = new ChromeOptions();
+    options.addArguments(
+        "--headless=new",
+        "--no-sandbox",
+        "--disable-dev-shm-usage",
+        "--disable-gpu",
+        "--window-size=1920,1080",
+        "--remote-allow-origins=*"
+    );
+    
+    options.setExperimentalOption("excludeSwitches", 
+        new String[]{"enable-logging", "enable-automation"});
+    
+    Configuration.browserCapabilities = options;
+    
+    RestAssured.baseURI = baseUrl;
+    
+    createTestUsers();
+}
 
     private static void createTestUsers() {
         try {
