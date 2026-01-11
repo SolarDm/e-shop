@@ -104,19 +104,47 @@ pipeline {
         }
 
         stage('Run UI Tests') {
-            agent any
-            
+            agent {
+                docker {
+                    image 'maven:3.9-eclipse-temurin-17'
+                    args '--shm-size=2g --privileged'
+                    reuseNode true
+                }
+            }
+
             steps {
                 dir(UI_TESTS_DIR) {
                     script {
-                        sh """
-                            mvn test \
+                        sh '''
+                            apt-get update && \
+                            apt-get install -y \
+                            wget \
+                            unzip \
+                            xvfb \
+                            curl \
+                            gnupg \
+                            lsb-release
+                            
+                            wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - && \
+                            echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list
+                            
+                            apt-get update && \
+                            apt-get install -y google-chrome-stable && \
+                            rm -rf /var/lib/apt/lists/*
+                            
+                            CHROME_VERSION=$(google-chrome --version | awk '{print $3}' | cut -d'.' -f1) && \
+                            wget -q -O /tmp/chromedriver.zip "https://storage.googleapis.com/chrome-for-testing-public/${CHROME_VERSION}/linux64/chromedriver-linux64.zip" && \
+                            unzip /tmp/chromedriver.zip -d /tmp/ && \
+                            mv /tmp/chromedriver-linux64/chromedriver /usr/local/bin/ && \
+                            chmod +x /usr/local/bin/chromedriver
+                            
+                            xvfb-run -a mvn clean test \
                                 -Dselenide.base-url=${TEST_FRONTEND_URL} \
-                                -Dapp.backend.url=${TEST_BACKEND_URL} \
-                                -Dbrowser=chrome \
+                                -Dselenide.browser=chrome \
                                 -Dselenide.headless=true \
-                                -Dselenide.timeout=10000
-                        """
+                                -Dselenide.timeout=10000 \
+                                -Dselenide.browserSize=1920x1080
+                        '''
                     }
                 }
             }
