@@ -106,22 +106,35 @@ pipeline {
         stage('Run UI Tests') {
             agent {
                 docker {
-                    image 'selenoid/chrome:latest'
-                    args '--shm-size=2g --privileged'
+                    image 'maven:3.9-eclipse-temurin-17'
+                    args '--shm-size=2g'
                 }
             }
 
             steps {
                 dir(UI_TESTS_DIR) {
                     script {
-                        sh """
-                            mvn test \
+                        sh '''
+                            apk update && \
+                            apk add --no-cache \
+                            chromium \
+                            chromium-chromedriver \
+                            xvfb-run \
+                            bash \
+                            curl
+                        '''
+
+                        sh '''
+                            export CHROME_BIN=/usr/bin/chromium-browser
+                            export CHROME_DRIVER=/usr/bin/chromedriver
+                            
+                            # Запускаем тесты через Xvfb для headless режима
+                            xvfb-run -a mvn clean test \
                                 -Dselenide.base-url=${TEST_FRONTEND_URL} \
-                                -Dapp.backend.url=${TEST_BACKEND_URL} \
-                                -Dbrowser=chrome \
+                                -Dselenide.browser=chrome \
                                 -Dselenide.headless=true \
                                 -Dselenide.timeout=10000
-                        """
+                        '''
                     }
                 }
             }
