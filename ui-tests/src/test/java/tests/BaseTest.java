@@ -24,12 +24,8 @@ public class BaseTest {
 
     @BeforeAll
 static void setUpAll() {
-     WebDriverManager wdm = WebDriverManager.chromedriver();
+    WebDriverManager wdm = WebDriverManager.chromedriver();
     wdm.setup();
-    
-    String driverPath = wdm.getDownloadedDriverPath();
-    System.setProperty("webdriver.chrome.driver", driverPath);
-    System.out.println("ChromeDriver path: " + driverPath);
     
     String baseUrl = System.getProperty("baseUrl", "http://172.18.117.61:81");
     Configuration.baseUrl = baseUrl;
