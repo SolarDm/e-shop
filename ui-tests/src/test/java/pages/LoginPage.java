@@ -1,5 +1,6 @@
 package pages;
 
+import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
@@ -10,11 +11,9 @@ public class LoginPage {
     private final SelenideElement passwordInput = $("#password");
     private final SelenideElement loginButton = $(".login-btn");
     private final SelenideElement demoButton = $(".demo-btn");
-    private final SelenideElement rememberCheckbox = $("#remember");
-    private final SelenideElement showPasswordButton = $(".password-toggle");
     
     public LoginPage open() {
-        open("/login");
+        Selenide.open("/login");
         return this;
     }
     
@@ -38,11 +37,6 @@ public class LoginPage {
         return this;
     }
     
-    public LoginPage togglePasswordVisibility() {
-        showPasswordButton.click();
-        return this;
-    }
-    
     public LoginPage shouldHaveError(String errorText) {
         $(".error-message").shouldHave(text(errorText));
         return this;
@@ -52,8 +46,5 @@ public class LoginPage {
         $(".success-message").shouldBe(visible);
         return this;
     }
-    
-    public boolean isPasswordVisible() {
-        return passwordInput.getAttribute("type").equals("text");
-    }
+
 }

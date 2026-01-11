@@ -1,8 +1,11 @@
 package tests;
 
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.Alert;
 import pages.CartPage;
 import pages.ProductListPage;
+
+import static com.codeborne.selenide.Selenide.webdriver;
 
 class CartTests extends BaseTest {
     
@@ -21,7 +24,10 @@ class CartTests extends BaseTest {
         
         new ProductListPage()
             .open()
-            .addProductToCart(0);
+            .addProductToCart(1);
+
+        Alert alert = webdriver().driver().switchTo().alert();
+        alert.accept();
         
         new CartPage()
             .open()
@@ -34,7 +40,10 @@ class CartTests extends BaseTest {
         
         new ProductListPage()
             .open()
-            .addProductToCart(0);
+            .addProductToCart(1);
+
+        Alert alert = webdriver().driver().switchTo().alert();
+        alert.accept();
         
         new CartPage()
             .open()

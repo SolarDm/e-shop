@@ -1,8 +1,9 @@
 package pages;
 
+import com.codeborne.selenide.CollectionCondition;
 import com.codeborne.selenide.ElementsCollection;
+import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
-import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
 
 public class AdminPanelPage {
@@ -14,7 +15,7 @@ public class AdminPanelPage {
     private final ElementsCollection statCards = $$(".stat-card");
     
     public AdminPanelPage open() {
-        open("/admin");
+        Selenide.open("/admin");
         return this;
     }
     
@@ -39,15 +40,7 @@ public class AdminPanelPage {
     }
     
     public AdminPanelPage shouldShowStats() {
-        statCards.shouldHaveSize(3); // Users, Orders, Products
-        return this;
-    }
-    
-    public AdminPanelPage createProduct(String name, String description, String price) {
-        $("[placeholder='Название товара']").setValue(name);
-        $("[placeholder='Описание товара']").setValue(description);
-        $("[placeholder='Цена']").setValue(price);
-        $(".btn-create").click();
+        statCards.shouldHave(CollectionCondition.size(3));
         return this;
     }
 }

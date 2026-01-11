@@ -1,5 +1,6 @@
 package pages;
 
+import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
@@ -14,7 +15,7 @@ public class RegisterPage {
     private final SelenideElement termsCheckbox = $("#agreeTerms");
     
     public RegisterPage open() {
-        open("/register");
+        Selenide.open("/register");
         return this;
     }
     
@@ -33,11 +34,6 @@ public class RegisterPage {
     
     public RegisterPage submit() {
         registerButton.click();
-        return this;
-    }
-    
-    public RegisterPage shouldShowPasswordStrength(String strength) {
-        $(".strength-text").shouldHave(text(strength));
         return this;
     }
     

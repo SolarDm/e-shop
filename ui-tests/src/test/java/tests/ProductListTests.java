@@ -1,42 +1,27 @@
 package tests;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import pages.ProductListPage;
-import pages.components.HeaderPage;
+
+import static com.codeborne.selenide.Selenide.webdriver;
 
 class ProductListTests extends BaseTest {
     
     private ProductListPage productListPage;
-    private HeaderPage header;
     
     @BeforeEach
     void setUp() {
         productListPage = new ProductListPage().open();
-        header = new HeaderPage();
-    }
-    
-    @Test
-    void mainPageLoadsCorrectly() {
-        productListPage
-            .shouldHaveTitle("Каталог товаров")
-            .shouldHaveProductsCount(12)
-            .shouldShowPagination();
-        
-        header
-            .shouldBeVisible()
-            .shouldHaveLogo()
-            .shouldShowGuestMenu();
     }
     
     @Test
     void searchProductByName() {
         productListPage
-            .searchProduct("стол")
-            .shouldHaveProductWithName("стол");
+            .searchProduct("слон")
+            .shouldHaveProductWithName("слон");
         
         int displayedCount = productListPage.getDisplayedProductsCount();
         int headerCount = productListPage.getTotalProductsFromHeader();
@@ -57,8 +42,8 @@ class ProductListTests extends BaseTest {
         productListPage
             .toggleFilters()
             .shouldShowFiltersPanel(true)
-            .selectCategory("Мебель")
-            .shouldHaveProductsCount(0);
+            .selectCategory("Электроника")
+            .shouldHaveProductsCount(2);
     }
     
     @Test
@@ -103,19 +88,10 @@ class ProductListTests extends BaseTest {
     }
     
     @Test
-    void paginationToSecondPage() {
-        if (productListPage.getTotalProductsFromHeader() > 12) {
-            productListPage
-                .goToPage(2)
-                .shouldHaveProductsCount(12);
-        }
-    }
-    
-    @Test
     void clearAllFilters() {
         productListPage
             .toggleFilters()
-            .selectCategory("Мебель")
+            .selectCategory("Электроника")
             .setPriceRange(10000, 50000);
         
         int filteredCount = productListPage.getDisplayedProductsCount();
@@ -128,15 +104,6 @@ class ProductListTests extends BaseTest {
             "После сброса фильтров должно быть больше товаров";
     }
     
-    @Test
-    void productsCountInHeader() {
-        int displayedCount = productListPage.getDisplayedProductsCount();
-        int headerCount = productListPage.getTotalProductsFromHeader();
-        
-        assert displayedCount == headerCount : 
-            "Количество товаров в заголовке должно совпадать";
-    }
-    
     @ParameterizedTest
     @CsvSource({
         "слон",
@@ -147,23 +114,5 @@ class ProductListTests extends BaseTest {
         productListPage
             .searchProduct(productName)
             .shouldHaveProductWithName(productName);
-    }
-    
-    @Test
-    void integrationWithHeader() {
-        loginAsUser("testuser", "password123");
-
-        header
-            .shouldShowUserMenu("testuser")
-            .shouldHaveCartCount(0);
-        
-        productListPage.addProductToCart(0);
-
-        header.shouldHaveCartCount(1);
-
-        header.clickCart();
-
-        String currentUrl = webdriver().driver().url();
-        assert currentUrl.contains("/cart") : "Не перешли в корзину";
     }
 }

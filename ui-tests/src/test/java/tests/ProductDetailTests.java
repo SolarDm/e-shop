@@ -2,18 +2,20 @@ package tests;
 
 import org.junit.jupiter.api.Test;
 import pages.ProductDetailPage;
-import pages.HeaderPage;
+import pages.components.HeaderPage;
+
+import static com.codeborne.selenide.Selenide.*;
 
 class ProductDetailTests extends BaseTest {
-    
+
     @Test
     void viewProductDetails() {
         open("/");
-        String productId = $(".product-card").getAttribute("href").split("/")[2];
-        
+        String productId = $(".product-link").getAttribute("href").split("/")[4];
+
         new ProductDetailPage()
-            .open(productId)
-            .shouldShowSuccessMessage();
+            .openProductPage(productId)
+            .shouldBeVisible();
     }
     
     @Test
@@ -21,12 +23,14 @@ class ProductDetailTests extends BaseTest {
         loginAsUser();
         
         open("/");
-        String productId = $(".product-card").getAttribute("href").split("/")[2];
+        String productId = $(".product-link").getAttribute("href").split("/")[4];
         
         new ProductDetailPage()
-            .open(productId)
+            .openProductPage(productId)
             .increaseQuantity()
             .addToCart();
+
+        refresh();
         
         new HeaderPage()
             .shouldHaveCartCount(2); 

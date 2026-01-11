@@ -1,51 +1,50 @@
 package pages;
 
+import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
+import org.openqa.selenium.Alert;
+
+import java.time.Duration;
+
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
 
 public class ProductDetailPage {
-    
+
     private final SelenideElement productTitle = $(".product-title");
-    private final SelenideElement productPrice = $(".price-value");
     private final SelenideElement addToCartButton = $(".add-to-cart-btn");
-    private final SelenideElement quantityValue = $(".quantity-value");
-    private final SelenideElement incrementButton = $(".quantity-btn:nth-child(3)");
-    private final SelenideElement decrementButton = $(".quantity-btn:nth-child(1)");
-    
-    public ProductDetailPage open(String productId) {
-        open("/product/" + productId);
+
+    private final SelenideElement incrementButton = $(".quantity-btn:last-child");
+    private final SelenideElement decrementButton = $(".quantity-btn:first-child");
+
+    public ProductDetailPage openProductPage(String productId) {
+        Selenide.open("/product/" + productId);
+
+        productTitle.shouldBe(visible, Duration.ofSeconds(5));
         return this;
     }
-    
+
     public ProductDetailPage addToCart() {
-        addToCartButton.click();
+        addToCartButton
+                .shouldBe(enabled, Duration.ofSeconds(5))
+                .click();
+
+        Alert alert = webdriver().driver().switchTo().alert();
+        alert.accept();
+
         return this;
     }
-    
+
     public ProductDetailPage increaseQuantity() {
-        incrementButton.click();
+        incrementButton
+                .shouldBe(enabled, Duration.ofSeconds(5))
+                .click();
         return this;
     }
-    
-    public ProductDetailPage decreaseQuantity() {
-        decrementButton.click();
-        return this;
-    }
-    
-    public String getProductName() {
-        return productTitle.getText();
-    }
-    
-    public String getProductPrice() {
-        return productPrice.getText();
-    }
-    
-    public int getQuantity() {
-        return Integer.parseInt(quantityValue.getText());
-    }
-    
-    public ProductDetailPage shouldShowSuccessMessage() {
+
+    public ProductDetailPage shouldBeVisible() {
+        $(".product-detail, .product-container, .product-content")
+                .shouldBe(visible, Duration.ofSeconds(5));
         return this;
     }
 }

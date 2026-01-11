@@ -2,7 +2,7 @@ package tests;
 
 import org.junit.jupiter.api.Test;
 import pages.LoginPage;
-import pages.HeaderPage;
+import pages.components.HeaderPage;
 
 class LoginTests extends BaseTest {
     
@@ -10,13 +10,13 @@ class LoginTests extends BaseTest {
     void loginWithValidCredentials() {
         new LoginPage()
             .open()
-            .enterUsername("testuser")
-            .enterPassword("password123")
+            .enterUsername(TEST_USER_USERNAME)
+            .enterPassword(TEST_PASSWORD)
             .clickLogin()
             .shouldHaveSuccess();
         
         new HeaderPage()
-            .shouldShowUserMenu("testuser");
+            .shouldShowUserMenu(TEST_USER_USERNAME);
     }
     
     @Test
@@ -26,7 +26,7 @@ class LoginTests extends BaseTest {
             .enterUsername("wrong")
             .enterPassword("wrong")
             .clickLogin()
-            .shouldHaveError("Неверное имя пользователя или пароль");
+            .shouldHaveError("Неверные учетные данные");
     }
     
     @Test
