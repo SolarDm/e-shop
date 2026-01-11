@@ -106,8 +106,8 @@ pipeline {
         stage('Run UI Tests') {
             agent {
                 docker {
-                    image 'maven:3.9-eclipse-temurin-17'
-                    args '--shm-size=2g'
+                    image 'selenoid/chrome:latest'
+                    args '--shm-size=2g --privileged'
                 }
             }
 
