@@ -24,9 +24,10 @@ public class BaseTest {
 
     @BeforeAll
 static void setUpAll() {
-    WebDriverManager.chromedriver().setup();
-
-    String driverPath = WebDriverManager.chromedriver().getDownloadedDriverPath();
+     WebDriverManager wdm = WebDriverManager.chromedriver();
+    wdm.setup();
+    
+    String driverPath = wdm.getDownloadedDriverPath();
     System.setProperty("webdriver.chrome.driver", driverPath);
     System.out.println("ChromeDriver path: " + driverPath);
     
