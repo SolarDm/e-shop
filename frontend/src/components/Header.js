@@ -72,7 +72,7 @@ const Header = () => {
                                 )}
                             </Link>
 
-                            <Link to="/orders" className={`nav-link ${isActive('/orders')}`}>
+                            <Link to="/orders" className={`nav-link order-link ${isActive('/orders')}`}>
                                 <span className="nav-icon">📦</span>
                                 <span className="nav-text">Заказы</span>
                             </Link>
@@ -97,7 +97,7 @@ const Header = () => {
                         </>
                     ) : (
                         <>
-                            <Link to="/login" className={`nav-link ${isActive('/login')}`}>
+                            <Link to="/login" className={`nav-link login-link ${isActive('/login')}`}>
                                 <span className="nav-icon">🔑</span>
                                 <span className="nav-text">Вход</span>
                             </Link>
