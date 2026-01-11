@@ -120,7 +120,8 @@ pipeline {
                                 -Dapp.backend.url=${TEST_BACKEND_URL} \
                                 -Dbrowser=chrome \
                                 -Dselenide.headless=true \
-                                -Dselenide.timeout=10000
+                                -Dselenide.timeout=10000 \
+                                -Dwebdriver.chrome.driver=/usr/local/bin/chromedriver
                         """
                     }
                 }
