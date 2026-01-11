@@ -1,13 +1,12 @@
 package tests;
 
-import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
+import com.codeborne.selenide.Condition;
 import io.github.bonigarcia.wdm.WebDriverManager;
+import io.restassured.RestAssured;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.junit.jupiter.api.*;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -17,6 +16,7 @@ import static com.codeborne.selenide.Selenide.*;
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.is;
+
 
 public class BaseTest {
     protected static String TEST_USER_USERNAME = "testuser" + System.currentTimeMillis();
@@ -53,7 +53,7 @@ static void setUpAll() {
     Configuration.browserCapabilities = options;
     
     RestAssured.baseURI = baseUrl;
-    
+
     createTestUsers();
 }
 
