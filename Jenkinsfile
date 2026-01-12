@@ -75,14 +75,30 @@ pipeline {
                                 }
                             }
                         }
-                    }
-
-                    withCredentials([string(credentialsId: 'eshop-user-token', variable: 'USER_TOKEN')]) {
-                        sh '''
+                        
+                        def authToken = sh(
+                            script: '''
+                                RESPONSE=$(curl -s -X POST http://172.18.117.61:81/api/auth/signin \
+                                    -H "Content-Type: application/json" \
+                                    -d '{"username":"admin","password":"admin123"}' \
+                                    --max-time 10)
+                                
+                                echo "$RESPONSE" | jq -r '.token'
+                            ''',
+                            returnStdout: true
+                        ).trim()
+                        
+                        if (!authToken) {
+                            error "Не удалось получить токен аутентификации"
+                        }
+                        
+                        sh """
                             cp e-shop-local.json e-shop-local-runtime.json
-                            sed -i "s|\\\${USER_TOKEN}|${USER_TOKEN}|g" e-shop-local-runtime.json
-                        '''
-
+                            # Экранируем спецсимволы для sed
+                            ESCAPED_TOKEN=\$(echo '${authToken}' | sed 's/[\\&]/\\\\&/g')
+                            sed -i "s|\\\\\\\${USER_TOKEN}|\${ESCAPED_TOKEN}|g" e-shop-local-runtime.json
+                        """
+                        
                         sh '''
                             newman run "e-shop-product-api-tests.json" \
                                 -e "e-shop-local-runtime.json" \
