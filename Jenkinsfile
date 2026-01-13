@@ -104,7 +104,6 @@ pipeline {
                                 -e "e-shop-local-runtime.json" \
                                 --reporters cli,junit,html \
                                 --reporter-junit-export "newman-test-result.xml" \
-                                --reporter-html-export "newman-test-report.html" \
                                 --disable-unicode
                         '''
                     }
