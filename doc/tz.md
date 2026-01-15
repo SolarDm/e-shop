@@ -25,7 +25,6 @@
 - База данных: PostgreSQL
 - REST API
 - JWT-аутентификация
-- Логирование и мониторинг через Grafana
 - CI/CD через Jenkins
 - Деплой через Docker
 
