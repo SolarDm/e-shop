@@ -27,6 +27,7 @@
 - [x] UI-автотесты с использованием Selenium
 
 ## Структура проекта
+```
 ecommerce/
 ├── backend/          # Spring Boot приложение
 ├── frontend/         # React-приложение
@@ -34,6 +35,7 @@ ecommerce/
 ├── postman/          # Коллекции и автотесты Postman
 ├── selenium-tests/   # UI-автотесты на Selenium
 └── docs/             # Документация (архитектура, API, UI)
+```
 
 
 ## Запуск
