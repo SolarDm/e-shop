@@ -31,9 +31,8 @@
 ecommerce/
 ├── backend/          # Spring Boot приложение
 ├── frontend/         # React-приложение
-├── docker/           # Dockerfile и docker-compose.yml
-├── postman/          # Коллекции и автотесты Postman
-├── selenium-tests/   # UI-автотесты на Selenium
+├── postman-tests/          # Коллекции и автотесты Postman
+├── ui-tests/   # UI-автотесты на Selenium
 └── docs/             # Документация (архитектура, API, UI)
 ```
 
