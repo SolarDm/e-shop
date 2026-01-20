@@ -39,10 +39,15 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createOrder(Authentication authentication) {
+    public ResponseEntity<?> createOrder(
+            @RequestBody Map<String, String> deliveryInfo,
+            Authentication authentication) {
         try {
             User user = (User) authentication.getPrincipal();
-            Order order = orderService.createOrder(user);
+            Order order;
+
+            order = orderService.createOrder(user, deliveryInfo);
+
             return ResponseEntity.ok(Map.of(
                     "success", true,
                     "message", "Заказ успешно оформлен",
@@ -111,6 +116,44 @@ public class OrderController {
                     .body(Map.of(
                             "success", false,
                             "error", "Ошибка повторного заказа: " + e.getMessage()
+                    ));
+        }
+    }
+
+    @PutMapping("/{id}/delivery-info")
+    public ResponseEntity<?> updateDeliveryInfo(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> deliveryInfo) {
+        try {
+            Order order = orderService.getOrderById(id);
+
+            if (deliveryInfo.containsKey("shippingAddress")) {
+                order.setShippingAddress(deliveryInfo.get("shippingAddress"));
+            }
+            if (deliveryInfo.containsKey("recipientPhone")) {
+                order.setRecipientPhone(deliveryInfo.get("recipientPhone"));
+            }
+            if (deliveryInfo.containsKey("recipientName")) {
+                order.setRecipientName(deliveryInfo.get("recipientName"));
+            }
+            if (deliveryInfo.containsKey("deliveryNotes")) {
+                order.setDeliveryNotes(deliveryInfo.get("deliveryNotes"));
+            }
+            if (deliveryInfo.containsKey("shippingMethod")) {
+                order.setShippingMethod(deliveryInfo.get("shippingMethod"));
+            }
+
+            orderService.updateOrderStatus(id, order.getStatus());
+
+            return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "message", "Информация о доставке обновлена"
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of(
+                            "success", false,
+                            "error", "Ошибка обновления информации: " + e.getMessage()
                     ));
         }
     }

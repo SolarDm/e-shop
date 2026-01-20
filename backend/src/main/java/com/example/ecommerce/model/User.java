@@ -64,8 +64,6 @@ public class User implements UserDetails {
     public Set<Role> getRoles() { return roles; }
     public void setRoles(Set<Role> roles) { this.roles = roles; }
 
-    // Реализация методов UserDetails
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream()

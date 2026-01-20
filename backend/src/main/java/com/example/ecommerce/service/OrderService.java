@@ -5,8 +5,13 @@ import com.example.ecommerce.repository.OrderRepository;
 import com.example.ecommerce.repository.CartRepository;
 import com.example.ecommerce.repository.ProductRepository;
 import com.example.ecommerce.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,13 +37,30 @@ public class OrderService {
         return orderRepository.findByUser(user);
     }
 
-    public Order createOrder(User user) {
+    public Order createOrder(User user, Map<String, String> deliveryInfo) {
         Cart cart = cartRepository.findByUser(user);
         if (cart == null || cart.getCartItems().isEmpty()) {
             throw new RuntimeException("Корзина пуста");
         }
 
         Order order = new Order(user);
+
+        if (deliveryInfo != null) {
+            order.setShippingAddress(deliveryInfo.get("shippingAddress"));
+            order.setRecipientPhone(deliveryInfo.get("recipientPhone"));
+            order.setRecipientName(deliveryInfo.get("recipientName"));
+            order.setDeliveryNotes(deliveryInfo.get("deliveryNotes"));
+            order.setShippingMethod(deliveryInfo.get("shippingMethod"));
+
+            String method = deliveryInfo.get("shippingMethod");
+            if ("EXPRESS".equals(method)) {
+                order.setShippingCost(new BigDecimal("500.00"));
+            } else if ("STANDARD".equals(method)) {
+                order.setShippingCost(new BigDecimal("250.00"));
+            } else if ("PICKUP".equals(method)) {
+                order.setShippingCost(BigDecimal.ZERO);
+            }
+        }
 
         Set<OrderItem> orderItems = cart.getCartItems().stream()
                 .map(item -> new OrderItem(order, item.getProduct(), item.getQuantity()))
@@ -70,32 +92,12 @@ public class OrderService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
 
-        Cart cart = cartRepository.findByUser(user);
-        if (cart == null) {
-            cart = new Cart(user);
-            cart = cartRepository.save(cart);
-        }
-
-        for (OrderItem orderItem : oldOrder.getOrderItems()) {
-            Product product = orderItem.getProduct();
-            Integer quantity = orderItem.getQuantity();
-
-            CartItem existingCartItem = cart.getCartItems().stream()
-                    .filter(item -> item.getProduct().getId().equals(product.getId()))
-                    .findFirst()
-                    .orElse(null);
-
-            if (existingCartItem != null) {
-                existingCartItem.setQuantity(existingCartItem.getQuantity() + quantity);
-            } else {
-                CartItem cartItem = new CartItem(cart, product, quantity);
-                cart.getCartItems().add(cartItem);
-            }
-        }
-
-        cartRepository.save(cart);
-
         Order newOrder = new Order(user);
+        newOrder.setShippingAddress(oldOrder.getShippingAddress());
+        newOrder.setRecipientPhone(oldOrder.getRecipientPhone());
+        newOrder.setRecipientName(oldOrder.getRecipientName());
+        newOrder.setShippingMethod(oldOrder.getShippingMethod());
+        newOrder.setShippingCost(oldOrder.getShippingCost());
 
         Set<OrderItem> newOrderItems = oldOrder.getOrderItems().stream()
                 .map(oldItem -> new OrderItem(newOrder, oldItem.getProduct(), oldItem.getQuantity()))
@@ -114,18 +116,24 @@ public class OrderService {
         return orderRepository.count();
     }
 
-    public Map<String, Object> getOrderStatistics() {
-        long totalOrders = orderRepository.count();
-        long pendingOrders = orderRepository.countByStatus("PENDING");
-        long completedOrders = orderRepository.countByStatus("COMPLETED");
-        long cancelledOrders = orderRepository.countByStatus("CANCELLED");
+    @Transactional
+    public void deleteOrder(Long orderId) {
+        Order order = getOrderById(orderId);
 
-        return Map.of(
-                "totalOrders", totalOrders,
-                "pendingOrders", pendingOrders,
-                "completedOrders", completedOrders,
-                "cancelledOrders", cancelledOrders
-        );
+        order.getOrderItems().clear();
+        orderRepository.save(order);
+
+        orderRepository.delete(order);
+    }
+
+    public List<Order> getOrdersBetweenDates(LocalDateTime startDate, LocalDateTime endDate) {
+        return orderRepository.findAll()
+                .stream()
+                .filter(order -> order.getOrderDate() != null &&
+                        !order.getOrderDate().isBefore(startDate) &&
+                        !order.getOrderDate().isAfter(endDate))
+                .sorted(Comparator.comparing(Order::getOrderDate).reversed())
+                .collect(Collectors.toList());
     }
 
 }

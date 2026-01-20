@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -86,11 +87,35 @@ public class AdminController {
     }
 
     @GetMapping("/orders")
-    public ResponseEntity<?> getAllOrders() {
+    public ResponseEntity<?> getAllOrders(
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String search) {
         try {
             List<Order> orders = orderService.getAllOrders();
+
+            if (status != null && !status.isEmpty()) {
+                orders = orders.stream()
+                        .filter(order -> status.equals(order.getStatus()))
+                        .collect(Collectors.toList());
+            }
+
+            if (search != null && !search.isEmpty()) {
+                String finalSearch = search.toLowerCase();
+                orders = orders.stream()
+                        .filter(order ->
+                                String.valueOf(order.getId()).contains(finalSearch) ||
+                                        (order.getRecipientName() != null &&
+                                                order.getRecipientName().toLowerCase().contains(finalSearch)) ||
+                                        (order.getRecipientPhone() != null &&
+                                                order.getRecipientPhone().contains(finalSearch)) ||
+                                        (order.getUser() != null &&
+                                                order.getUser().getEmail().toLowerCase().contains(finalSearch))
+                        )
+                        .collect(Collectors.toList());
+            }
+
             return ResponseEntity.ok(
-                    Map.of("success", true, "orders", orders)
+                    Map.of("success", true, "orders", orders, "count", orders.size())
             );
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -126,16 +151,57 @@ public class AdminController {
         }
     }
 
-    @GetMapping("/orders/stats")
-    public ResponseEntity<?> getOrderStatistics() {
+    @PutMapping("/orders/{id}/delivery-info")
+    public ResponseEntity<?> updateDeliveryInfoAdmin(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> deliveryInfo) {
         try {
-            Map<String, Object> stats = orderService.getOrderStatistics();
+            Order order = orderService.getOrderById(id);
+
+            if (deliveryInfo.containsKey("shippingAddress")) {
+                order.setShippingAddress(deliveryInfo.get("shippingAddress"));
+            }
+            if (deliveryInfo.containsKey("recipientPhone")) {
+                order.setRecipientPhone(deliveryInfo.get("recipientPhone"));
+            }
+            if (deliveryInfo.containsKey("recipientName")) {
+                order.setRecipientName(deliveryInfo.get("recipientName"));
+            }
+            if (deliveryInfo.containsKey("deliveryNotes")) {
+                order.setDeliveryNotes(deliveryInfo.get("deliveryNotes"));
+            }
+            if (deliveryInfo.containsKey("shippingMethod")) {
+                order.setShippingMethod(deliveryInfo.get("shippingMethod"));
+            }
+            if (deliveryInfo.containsKey("shippingCost")) {
+                try {
+                    order.setShippingCost(new BigDecimal(deliveryInfo.get("shippingCost")));
+                } catch (NumberFormatException e) {
+                    throw new RuntimeException("Неверный формат стоимости доставки");
+                }
+            }
+
+            orderService.updateOrderStatus(id, order.getStatus());
+
             return ResponseEntity.ok(
-                    Map.of("success", true, "stats", stats)
+                    Map.of("success", true, "message", "Информация о доставке обновлена", "order", order)
             );
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("success", false, "error", "Ошибка получения статистики: " + e.getMessage()));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("success", false, "error", "Ошибка обновления информации: " + e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/orders/{id}")
+    public ResponseEntity<?> deleteOrder(@PathVariable Long id) {
+        try {
+            orderService.deleteOrder(id);
+            return ResponseEntity.ok(
+                    Map.of("success", true, "message", "Заказ удален")
+            );
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("success", false, "error", "Ошибка удаления заказа: " + e.getMessage()));
         }
     }
 

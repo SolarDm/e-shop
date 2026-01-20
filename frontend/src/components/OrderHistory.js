@@ -53,6 +53,15 @@ const OrderHistory = () => {
         return statusMap[status] || status;
     };
 
+    const getShippingMethodText = (method) => {
+        const methodMap = {
+            'STANDARD': 'Стандартная доставка',
+            'EXPRESS': 'Экспресс доставка',
+            'PICKUP': 'Самовывоз'
+        };
+        return methodMap[method] || method;
+    };
+
     const handleFilterChange = (e) => {
         const { name, value } = e.target;
         setFilters(prev => ({
@@ -70,13 +79,9 @@ const OrderHistory = () => {
     };
 
     const filteredOrders = orders.filter(order => {
-        console.log(new Date(order.orderDate))
-        console.log(new Date(filters.startDate))
-        console.log(new Date(order.orderDate) < new Date(filters.startDate))
         if (filters.status && order.status !== filters.status) return false;
         if (filters.startDate && new Date(order.orderDate) < new Date(filters.startDate)) return false;
         return !(filters.endDate && new Date(order.orderDate) > new Date(filters.endDate));
-
     });
 
     const handleReorder = async (orderId) => {
@@ -89,12 +94,29 @@ const OrderHistory = () => {
             });
 
             if (response.data.success) {
-                alert('Заказ добавлен в корзину!');
+                alert('Заказ повторён!');
             }
         } catch (error) {
             console.error('Ошибка повторного заказа:', error);
             alert('Ошибка: ' + (error.response?.data?.error || error.message));
         }
+    };
+
+    const formatDeliveryInfo = (order) => {
+        let info = [];
+        if (order.shippingAddress) {
+            info.push(`Адрес: ${order.shippingAddress}`);
+        }
+        if (order.recipientPhone) {
+            info.push(`Телефон: ${order.recipientPhone}`);
+        }
+        if (order.shippingMethod) {
+            info.push(`Способ доставки: ${getShippingMethodText(order.shippingMethod)}`);
+        }
+        if (order.deliveryNotes) {
+            info.push(`Примечания: ${order.deliveryNotes}`);
+        }
+        return info;
     };
 
     if (loading) {
@@ -188,7 +210,12 @@ const OrderHistory = () => {
                 {filteredOrders.map(order => (
                     <div key={order.id} className="order-card">
                         <div className="order-header">
-                            <h3>Заказ</h3>
+                            <div className="order-header-left">
+                                <h3>Заказ #{order.id}</h3>
+                                <span className="order-date">
+                                    {new Date(order.orderDate).toLocaleDateString('ru-RU')}
+                                </span>
+                            </div>
                             <span className={`order-status status-${order.status?.toLowerCase()}`}>
                                 {getStatusText(order.status)}
                             </span>
@@ -208,6 +235,21 @@ const OrderHistory = () => {
                                 </span>
                             </div>
 
+                            {order.deliveryDate && (
+                                <div className="detail-item">
+                                    <span className="detail-label">Дата доставки</span>
+                                    <span className="detail-value">
+                                        {new Date(order.deliveryDate).toLocaleString('ru-RU', {
+                                            day: '2-digit',
+                                            month: '2-digit',
+                                            year: 'numeric',
+                                            hour: '2-digit',
+                                            minute: '2-digit'
+                                        })}
+                                    </span>
+                                </div>
+                            )}
+
                             <div className="detail-item">
                                 <span className="detail-label">Товаров</span>
                                 <span className="detail-value">
@@ -222,6 +264,50 @@ const OrderHistory = () => {
                                 </span>
                             </div>
                         </div>
+
+                        {(order.shippingAddress || order.recipientPhone || order.shippingMethod) && (
+                            <div className="delivery-info">
+                                <h4>Информация о доставке</h4>
+                                <div className="delivery-details">
+                                    {order.shippingAddress && (
+                                        <div className="delivery-detail">
+                                            <span className="delivery-label">📍 Адрес:</span>
+                                            <span className="delivery-value">{order.shippingAddress}</span>
+                                        </div>
+                                    )}
+                                    {order.recipientName && (
+                                        <div className="delivery-detail">
+                                            <span className="delivery-label">👤 Получатель:</span>
+                                            <span className="delivery-value">{order.recipientName}</span>
+                                        </div>
+                                    )}
+                                    {order.recipientPhone && (
+                                        <div className="delivery-detail">
+                                            <span className="delivery-label">📱 Телефон:</span>
+                                            <span className="delivery-value">{order.recipientPhone}</span>
+                                        </div>
+                                    )}
+                                    {order.shippingMethod && (
+                                        <div className="delivery-detail">
+                                            <span className="delivery-label">🚚 Способ доставки:</span>
+                                            <span className="delivery-value">{getShippingMethodText(order.shippingMethod)}</span>
+                                        </div>
+                                    )}
+                                    {order.shippingCost > 0 && (
+                                        <div className="delivery-detail">
+                                            <span className="delivery-label">💰 Стоимость доставки:</span>
+                                            <span className="delivery-value">{order.shippingCost} ₽</span>
+                                        </div>
+                                    )}
+                                    {order.deliveryNotes && (
+                                        <div className="delivery-detail">
+                                            <span className="delivery-label">📝 Примечания:</span>
+                                            <span className="delivery-value">{order.deliveryNotes}</span>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
 
                         {order.orderItems && order.orderItems.length > 0 && (
                             <div className="order-items">
@@ -263,12 +349,6 @@ const OrderHistory = () => {
                                 className="reorder-btn"
                             >
                                 🔄 Повторить заказ
-                            </button>
-                            <button className="track-btn">
-                                📍 Отследить
-                            </button>
-                            <button className="download-btn">
-                                ⬇️ Счет
                             </button>
                         </div>
                     </div>
