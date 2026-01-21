@@ -1,0 +1,7 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<LogicalDesign class="oracle.dbtools.crest.model.design.logical.LogicalDesign" name="Logical" id="CD5BA811-9FB1-35DC-FC49-9E914DD019FC" mainViewID="6A94ADEF-5826-C1FE-2A8B-372590C1E209">
+<createdBy>Larra</createdBy>
+<createdTime>2026-01-21 00:35:48 UTC</createdTime>
+<ownerDesignName>db_sceme</ownerDesignName>
+<shouldBeOpen>false</shouldBeOpen>
+</LogicalDesign>

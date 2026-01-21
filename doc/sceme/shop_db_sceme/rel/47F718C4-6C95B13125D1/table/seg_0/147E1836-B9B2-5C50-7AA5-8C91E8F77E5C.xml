@@ -1,0 +1,104 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="147E1836-B9B2-5C50-7AA5-8C91E8F77E5C" name="products">
+<sourceDDLFile>eshop_schema.sql</sourceDDLFile>
+<createdBy>Larra</createdBy>
+<createdTime>2026-01-21 00:36:47 UTC</createdTime>
+<ownerDesignName>shop_db_sceme</ownerDesignName>
+<importedID>398216DC-60CA-87EB-7A8B-D5288DCF3E34</importedID>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="id" id="3A1C93F7-0BF3-B633-70C8-A4948E4CE99A">
+<sourceDDLFile>eshop_schema.sql</sourceDDLFile>
+<createdBy>Larra</createdBy>
+<createdTime>2026-01-21 00:36:47 UTC</createdTime>
+<ownerDesignName>shop_db_sceme</ownerDesignName>
+<importedID>97F287AE-421F-3F34-46F3-464A95F8441F</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>B50D34F5-1838-1457-7BEE-68E27F0197E0</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="description" id="44EDD6A1-9AE3-ABEC-52F3-E9B479CE6E0C">
+<sourceDDLFile>eshop_schema.sql</sourceDDLFile>
+<createdBy>Larra</createdBy>
+<createdTime>2026-01-21 00:36:47 UTC</createdTime>
+<ownerDesignName>shop_db_sceme</ownerDesignName>
+<importedID>A3B3B882-9D54-8691-7035-542E5008F6AA</importedID>
+<nullsAllowed>true</nullsAllowed>
+<use>0</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<domain>8E145543-4ABF-765A-9239-38515A46314D</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="name" id="518853CE-DD2C-15F2-3F71-DA3D09086D23">
+<sourceDDLFile>eshop_schema.sql</sourceDDLFile>
+<createdBy>Larra</createdBy>
+<createdTime>2026-01-21 00:36:47 UTC</createdTime>
+<ownerDesignName>shop_db_sceme</ownerDesignName>
+<importedID>38D3A938-AF3E-808D-B1F3-7FF4447FFACB</importedID>
+<nullsAllowed>true</nullsAllowed>
+<use>0</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<domain>433F4784-2039-E896-BB88-997F8230E911</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="price" id="E992F5E6-6967-55DE-2C79-CDB76297283F">
+<sourceDDLFile>eshop_schema.sql</sourceDDLFile>
+<createdBy>Larra</createdBy>
+<createdTime>2026-01-21 00:36:47 UTC</createdTime>
+<ownerDesignName>shop_db_sceme</ownerDesignName>
+<importedID>D515D510-86D8-DC0E-DA1D-29E7FE03D918</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>C03FE12D-B6B3-0391-DDCD-C8795E5BFD29</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="category_id" id="74A54F7E-F082-3534-5509-F3527E5568E1">
+<sourceDDLFile>eshop_schema.sql</sourceDDLFile>
+<createdBy>Larra</createdBy>
+<createdTime>2026-01-21 00:36:47 UTC</createdTime>
+<ownerDesignName>shop_db_sceme</ownerDesignName>
+<importedID>7FD65A0C-587E-A604-2C39-DA6A6C1C6B3B</importedID>
+<nullsAllowed>true</nullsAllowed>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>B50D34F5-1838-1457-7BEE-68E27F0197E0</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="ECD7A453-61A5-2C22-6E75-A6BABA201B03" referredColumn="0057C9FA-9B6E-1BB7-BFAC-C090D177F3AE"/>
+</associations>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="BF45D14B-8199-32C3-F6B0-31896AADEF7F" name="pk_products">
+<sourceDDLFile>eshop_schema.sql</sourceDDLFile>
+<createdBy>Larra</createdBy>
+<createdTime>2026-01-21 00:36:47 UTC</createdTime>
+<ownerDesignName>shop_db_sceme</ownerDesignName>
+<importedID>21BC72E8-B471-D27E-5D8F-A401FC009645</importedID>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="3A1C93F7-0BF3-B633-70C8-A4948E4CE99A"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="63E4C573-E07F-74FA-0705-60E54CA0D868" name="fk_products_category">
+<createdBy>Larra</createdBy>
+<createdTime>2026-01-21 00:36:47 UTC</createdTime>
+<ownerDesignName>shop_db_sceme</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="74A54F7E-F082-3534-5509-F3527E5568E1"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

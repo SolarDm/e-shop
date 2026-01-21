@@ -1,0 +1,7 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<BusinessInfoDesign class="oracle.dbtools.crest.model.businessinfo.BusinessInfoDesign" name="Business Information" id="85F56987-7C8D-E593-A5F2-0CC5741A9FA4">
+<createdBy>Larra</createdBy>
+<createdTime>2026-01-21 00:35:49 UTC</createdTime>
+<ownerDesignName>db_sceme</ownerDesignName>
+<shouldBeOpen>false</shouldBeOpen>
+</BusinessInfoDesign>

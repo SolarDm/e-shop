@@ -1,0 +1,12 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<SequenceOraclev10g class="oracle.dbtools.crest.model.design.storage.oracle.v10g.SequenceOraclev10g" name="carts_id_seq" directorySegmentName="seg_0" id="D6CAA7B2-B2FB-AF3B-94C1-FAEA94F48184">
+<sourceDDLFile>eshop_schema.sql</sourceDDLFile>
+<createdBy>Larra</createdBy>
+<createdTime>2026-01-21 00:36:33 UTC</createdTime>
+<ownerDesignName>shop_db_sceme</ownerDesignName>
+<cache>1</cache>
+<incrementBy>1</incrementBy>
+<maxValue>CACHE</maxValue>
+<minValue>NO</minValue>
+<startWith>1</startWith>
+</SequenceOraclev10g>

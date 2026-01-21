@@ -1,0 +1,13 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<OSDM_Design class="oracle.dbtools.crest.model.design.Design" name="shop_db_sceme" id="1BBA9553-BACA-53AB-297B-6B7B8CA26DEA" version="3.5">
+<createdBy>Larra</createdBy>
+<createdTime>2026-01-21 00:35:48 UTC</createdTime>
+<ownerDesignName>db_sceme</ownerDesignName>
+<capitalNames>false</capitalNames>
+<designId>1BBA9553-BACA-53AB-297B-6B7B8CA26DEA</designId>
+<usedDesignStorageDescriptors>
+<designDescr class="oracle.dbtools.crest.model.design.Design$DesignStorageDesc" id="768E3215-A11F-5183-EB82-0B6F3C863A21">
+<designStoragePath>D:\eshop_schema</designStoragePath>
+</designDescr>
+</usedDesignStorageDescriptors>
+</OSDM_Design>

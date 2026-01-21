@@ -1,0 +1,7 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<ProcessModel class="oracle.dbtools.crest.model.design.process.ProcessModel" name="Process Model" id="10189443-D1E2-0664-4C84-27C3D82FB7EA">
+<createdBy>Larra</createdBy>
+<createdTime>2026-01-21 00:35:48 UTC</createdTime>
+<ownerDesignName>db_sceme</ownerDesignName>
+<shouldBeOpen>false</shouldBeOpen>
+</ProcessModel>

@@ -1,0 +1,79 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="04FE8735-C562-ECEA-D29E-D3473AAD1350" name="user_roles">
+<sourceDDLFile>eshop_schema.sql</sourceDDLFile>
+<createdBy>Larra</createdBy>
+<createdTime>2026-01-21 00:36:47 UTC</createdTime>
+<ownerDesignName>shop_db_sceme</ownerDesignName>
+<importedID>B49C121D-F70A-75E8-13BE-28F6B5DB1239</importedID>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="user_id" id="6861C60D-AD1D-75FB-8B21-203D4B9A9D00">
+<sourceDDLFile>eshop_schema.sql</sourceDDLFile>
+<createdBy>Larra</createdBy>
+<createdTime>2026-01-21 00:36:47 UTC</createdTime>
+<ownerDesignName>shop_db_sceme</ownerDesignName>
+<importedID>311622B7-D64B-2F9C-BDCC-FFF02AEA6104</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>B50D34F5-1838-1457-7BEE-68E27F0197E0</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="43570C22-1F2C-0B6A-07D6-773564295BE7" referredColumn="FEF68C70-ED8A-1575-FD6C-7BF8F99C26D9"/>
+</associations>
+</Column>
+<Column name="role_id" id="BD3BDADE-B486-D825-9935-24E349999EB9">
+<sourceDDLFile>eshop_schema.sql</sourceDDLFile>
+<createdBy>Larra</createdBy>
+<createdTime>2026-01-21 00:36:47 UTC</createdTime>
+<ownerDesignName>shop_db_sceme</ownerDesignName>
+<importedID>E4F3517A-D3CD-53F5-45CE-7B831149CF8F</importedID>
+<use>0</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<domain>991719BE-5FEF-02CF-0257-080321D2F5D8</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="55FA378B-48B4-D5AC-B2D5-A9B10597418B" referredColumn="6BD9C286-D018-44DD-9D2B-A64A7E2360D6"/>
+</associations>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="FFB36B95-0517-E14B-201B-077FBE792B3A" name="pk_user_roles">
+<sourceDDLFile>eshop_schema.sql</sourceDDLFile>
+<createdBy>Larra</createdBy>
+<createdTime>2026-01-21 00:36:47 UTC</createdTime>
+<ownerDesignName>shop_db_sceme</ownerDesignName>
+<importedID>6F52F711-D9A2-C0C6-5163-80AF9B6AF27B</importedID>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="6861C60D-AD1D-75FB-8B21-203D4B9A9D00"/>
+<colUsage columnID="BD3BDADE-B486-D825-9935-24E349999EB9"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="F943B8E2-2A99-81CE-D16B-0875D9967CD6" name="fk_user_roles_role">
+<createdBy>Larra</createdBy>
+<createdTime>2026-01-21 00:36:47 UTC</createdTime>
+<ownerDesignName>shop_db_sceme</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="BD3BDADE-B486-D825-9935-24E349999EB9"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="B628D5A7-F08C-4F92-9E9E-F7E84BB10BC3" name="fk_user_roles_user">
+<createdBy>Larra</createdBy>
+<createdTime>2026-01-21 00:36:47 UTC</createdTime>
+<ownerDesignName>shop_db_sceme</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="6861C60D-AD1D-75FB-8B21-203D4B9A9D00"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>
